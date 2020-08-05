@@ -5,9 +5,9 @@ import PernilIngredient from './PernilIngredient/PernilIngridient'
 
 const pernil = (props) => {
     
-    let transformedIngredients = Object.keys( props.ingridients )
+    let transformedIngredients = Object.keys( props.ingredients )
         .map( igKey => {
-            return [...Array( props.ingridients[igKey] )].map((_, i) => {
+            return [...Array( props.ingredients[igKey] )].map((_, i) => {
                 return <PernilIngredient key={igKey + i} type={igKey} />
             });
         })
