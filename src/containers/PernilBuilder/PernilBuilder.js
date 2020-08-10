@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import Auxiliary from "../../hoc/Auxiliary";
+import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Pernil from "../../components/Pernil/Pernil";
 import BuildControls from "../../components/Pernil/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
