@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import axios from "../../axios-orders";
 
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Pernil from "../../components/Pernil/Pernil";
 import BuildControls from "../../components/Pernil/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Pernil/OrderSummary/OrderSummary";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -24,6 +26,7 @@ class PernilBuilder extends Component {
     totalPrice: 4,
     purchaseable: false,
     purchasing: false,
+    loading: false,
   };
 
   updatePurchaseState(ingredients) {
@@ -90,7 +93,31 @@ class PernilBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    alert("Continue");
+    //alert("Continue");
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: "Amir Arreaza",
+        address: {
+          street: "Street",
+          zipCode: "11111",
+          country: "Venezuela",
+        },
+        email: "t@t.com",
+      },
+      deliveryMethod: "fastest",
+    };
+    axios.post("/orders.json", order).then(
+      (response) => {
+        this.setState({ loading: false, purchasing: false });
+      },
+      (error) => {
+        console.log(error);
+        this.setState({ loading: false });
+      }
+    );
   };
 
   render() {
@@ -101,18 +128,24 @@ class PernilBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
 
+    let orderSummary = (
+      <OrderSummary
+        ingredients={this.state.ingredients}
+        price={this.state.totalPrice}
+        purchaseCanceled={this.purchaseCancelHandler}
+        purchaseContinued={this.purchaseContinueHandler}
+      />
+    );
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
+    }
     return (
       <Auxiliary>
         <Modal
           show={this.state.purchasing}
           modalClosed={this.purchaseCancelHandler}
         >
-          <OrderSummary
-            ingredients={this.state.ingredients}
-            price={this.state.totalPrice}
-            purchaseCanceled={this.purchaseCancelHandler}
-            purchaseContinued={this.purchaseContinueHandler}
-          />
+          {orderSummary}
         </Modal>
         <Pernil ingredients={this.state.ingredients} />
         <BuildControls
