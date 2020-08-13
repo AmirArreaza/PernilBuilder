@@ -7,6 +7,7 @@ import BuildControls from "../../components/Pernil/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Pernil/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -161,4 +162,4 @@ class PernilBuilder extends Component {
   }
 }
 
-export default PernilBuilder;
+export default withErrorHandler(PernilBuilder, axios);
