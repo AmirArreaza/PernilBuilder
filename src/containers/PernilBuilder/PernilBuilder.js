@@ -7,7 +7,7 @@ import BuildControls from "../../components/Pernil/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Pernil/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -18,17 +18,24 @@ const INGREDIENT_PRICES = {
 
 class PernilBuilder extends Component {
   state = {
-    ingredients: {
-      salad: 0,
-      tomatoes: 0,
-      cheese: 0,
-      meat: 0,
-    },
+    ingredients: null,
     totalPrice: 4,
     purchaseable: false,
     purchasing: false,
     loading: false,
+    error: false
   };
+
+  componentDidMount() {
+    axios
+      .get("/ingredients.json")
+      .then((response) => {
+        this.setState({ ingredients: response.data });
+      })
+      .catch((error) => {
+        this.setState({error: true});
+      });
+  }
 
   updatePurchaseState(ingredients) {
     const sum = Object.keys(ingredients)
@@ -129,17 +136,37 @@ class PernilBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
 
-    let orderSummary = (
-      <OrderSummary
-        ingredients={this.state.ingredients}
-        price={this.state.totalPrice}
-        purchaseCanceled={this.purchaseCancelHandler}
-        purchaseContinued={this.purchaseContinueHandler}
-      />
-    );
+    let orderSummary = null;
+    let burger = this.state.error ? <p>Can't load ingreadients</p> : <Spinner />;
+
+    if (this.state.ingredients) {
+      burger = (
+        <Auxiliary>
+          <Pernil ingredients={this.state.ingredients} />
+          <BuildControls
+            ingredientAdded={this.addIngridientHandler}
+            ingredientRemoved={this.removeIngridientHandler}
+            disabled={disabledInfo}
+            purchaseable={this.state.purchaseable}
+            price={this.state.totalPrice}
+            ordered={this.purchaseHandler}
+          />
+        </Auxiliary>
+      );
+      orderSummary = (
+        <OrderSummary
+          ingredients={this.state.ingredients}
+          price={this.state.totalPrice}
+          purchaseCanceled={this.purchaseCancelHandler}
+          purchaseContinued={this.purchaseContinueHandler}
+        />
+      );
+    }
+
     if (this.state.loading) {
       orderSummary = <Spinner />;
     }
+
     return (
       <Auxiliary>
         <Modal
@@ -148,15 +175,7 @@ class PernilBuilder extends Component {
         >
           {orderSummary}
         </Modal>
-        <Pernil ingredients={this.state.ingredients} />
-        <BuildControls
-          ingredientAdded={this.addIngridientHandler}
-          ingredientRemoved={this.removeIngridientHandler}
-          disabled={disabledInfo}
-          purchaseable={this.state.purchaseable}
-          price={this.state.totalPrice}
-          ordered={this.purchaseHandler}
-        />
+        {burger}
       </Auxiliary>
     );
   }
