@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
 
 import Layout from "./hoc/Layout/Layout";
 import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
@@ -20,8 +21,10 @@ class App extends Component {
     return (
       <div>
         <Layout>
-          <PernilBuilder />
-          <Checkout />
+          <Switch>
+            <Route path="/checkout" component={Checkout}></Route>
+            <Route path="" exact component={PernilBuilder}></Route>
+          </Switch>
         </Layout>
       </div>
     );
