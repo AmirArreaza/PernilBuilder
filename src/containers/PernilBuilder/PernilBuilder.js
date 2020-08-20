@@ -23,7 +23,7 @@ class PernilBuilder extends Component {
     purchaseable: false,
     purchasing: false,
     loading: false,
-    error: false
+    error: false,
   };
 
   componentDidMount() {
@@ -34,7 +34,7 @@ class PernilBuilder extends Component {
         this.setState({ ingredients: response.data });
       })
       .catch((error) => {
-        this.setState({error: true});
+        this.setState({ error: true });
       });
   }
 
@@ -104,7 +104,20 @@ class PernilBuilder extends Component {
   purchaseContinueHandler = () => {
     //alert("Continue");
 
-    this.props.history.push('/checkout');
+    //this.props.history.push('/checkout');
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    const queryString = queryParams.join('&');
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString,
+    });
 
     /*
     this.setState({ loading: true });
@@ -143,7 +156,11 @@ class PernilBuilder extends Component {
     }
 
     let orderSummary = null;
-    let burger = this.state.error ? <p>Can't load ingreadients</p> : <Spinner />;
+    let burger = this.state.error ? (
+      <p>Can't load ingreadients</p>
+    ) : (
+      <Spinner />
+    );
 
     if (this.state.ingredients) {
       burger = (
