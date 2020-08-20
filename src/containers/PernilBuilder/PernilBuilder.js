@@ -27,6 +27,7 @@ class PernilBuilder extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props);
     axios
       .get("/ingredients.json")
       .then((response) => {
@@ -102,6 +103,10 @@ class PernilBuilder extends Component {
 
   purchaseContinueHandler = () => {
     //alert("Continue");
+
+    this.props.history.push('/checkout');
+
+    /*
     this.setState({ loading: true });
     const order = {
       ingredients: this.state.ingredients,
@@ -126,6 +131,7 @@ class PernilBuilder extends Component {
         this.setState({ loading: false });
       }
     );
+    */
   };
 
   render() {

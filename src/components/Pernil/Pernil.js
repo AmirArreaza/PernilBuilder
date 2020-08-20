@@ -1,10 +1,13 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 
 import classes from './Pernil.module.css';
 import PernilIngredient from './PernilIngredient/PernilIngridient'
 
 const pernil = (props) => {
     
+    console.log(props);
+
     let transformedIngredients = Object.keys( props.ingredients )
         .map( igKey => {
             return [...Array( props.ingredients[igKey] )].map((_, i) => {
@@ -31,4 +34,4 @@ const pernil = (props) => {
 
 };
 
-export default pernil;
+export default withRouter(pernil);
