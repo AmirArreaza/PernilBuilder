@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Layout from "./hoc/Layout/Layout";
 import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
+import Checkout from "./containers/Checkout/Checkout";
 
 class App extends Component {
   state = {
@@ -18,7 +19,10 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Layout>{this.state.show ? <PernilBuilder /> : null}</Layout>
+        <Layout>
+          <PernilBuilder />
+          <Checkout />
+        </Layout>
       </div>
     );
   }
