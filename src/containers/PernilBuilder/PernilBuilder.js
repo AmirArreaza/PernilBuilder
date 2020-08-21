@@ -113,38 +113,12 @@ class PernilBuilder extends Component {
           encodeURIComponent(this.state.ingredients[i])
       );
     }
+    queryParams.push('price=' + this.state.totalPrice);
     const queryString = queryParams.join('&');
     this.props.history.push({
       pathname: "/checkout",
       search: "?" + queryString,
     });
-
-    /*
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Amir Arreaza",
-        address: {
-          street: "Street",
-          zipCode: "11111",
-          country: "Venezuela",
-        },
-        email: "t@t.com",
-      },
-      deliveryMethod: "fastest",
-    };
-    axios.post("/orders.json", order).then(
-      (response) => {
-        this.setState({ loading: false, purchasing: false });
-      },
-      (error) => {
-        console.log(error);
-        this.setState({ loading: false });
-      }
-    );
-    */
   };
 
   render() {
