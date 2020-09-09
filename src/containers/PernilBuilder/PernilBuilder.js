@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import axios from "../../axios-orders";
 
+import {connect} from 'react-redux';
+import * as actionTypes from '../../store/actions';
+
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Pernil from "../../components/Pernil/Pernil";
 import BuildControls from "../../components/Pernil/BuildControls/BuildControls";
@@ -18,7 +21,6 @@ const INGREDIENT_PRICES = {
 
 class PernilBuilder extends Component {
   state = {
-    ingredients: null,
     totalPrice: 4,
     purchaseable: false,
     purchasing: false,
@@ -27,6 +29,7 @@ class PernilBuilder extends Component {
   };
 
   componentDidMount() {
+    /*
     console.log(this.props);
     axios
       .get("/ingredients.json")
@@ -36,6 +39,7 @@ class PernilBuilder extends Component {
       .catch((error) => {
         this.setState({ error: true });
       });
+      */
   }
 
   updatePurchaseState(ingredients) {
@@ -123,7 +127,7 @@ class PernilBuilder extends Component {
 
   render() {
     const disabledInfo = {
-      ...this.state.ingredients,
+      ...this.props.ings,
     };
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
@@ -136,13 +140,13 @@ class PernilBuilder extends Component {
       <Spinner />
     );
 
-    if (this.state.ingredients) {
+    if (this.props.ings) {
       burger = (
         <Auxiliary>
-          <Pernil ingredients={this.state.ingredients} />
+          <Pernil ingredients={this.props.ings} />
           <BuildControls
-            ingredientAdded={this.addIngridientHandler}
-            ingredientRemoved={this.removeIngridientHandler}
+            ingredientAdded={this.props.onIngredientAdded}
+            ingredientRemoved={this.props.onIngredientRemoved}
             disabled={disabledInfo}
             purchaseable={this.state.purchaseable}
             price={this.state.totalPrice}
@@ -152,7 +156,7 @@ class PernilBuilder extends Component {
       );
       orderSummary = (
         <OrderSummary
-          ingredients={this.state.ingredients}
+          ingredients={this.props.ings}
           price={this.state.totalPrice}
           purchaseCanceled={this.purchaseCancelHandler}
           purchaseContinued={this.purchaseContinueHandler}
@@ -178,4 +182,17 @@ class PernilBuilder extends Component {
   }
 }
 
-export default withErrorHandler(PernilBuilder, axios);
+const mapStateToProps = state => {
+  return {
+    ings: state.ingredients
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return{
+    onIngredientAdded: (ingName) => dispatch({ type: actionTypes.ADD_INGREDIENTS, ingredientName: ingName}),
+    onIngredientRemoved: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENTS, ingredientName: ingName}),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(PernilBuilder, axios));
