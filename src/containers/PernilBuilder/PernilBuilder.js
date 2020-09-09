@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import axios from "../../axios-orders";
 
-import {connect} from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import { connect } from "react-redux";
+import * as actionTypes from "../../store/actions";
 
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Pernil from "../../components/Pernil/Pernil";
@@ -12,10 +12,8 @@ import OrderSummary from "../../components/Pernil/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
-
 class PernilBuilder extends Component {
   state = {
-    purchaseable: false,
     purchasing: false,
     loading: false,
     error: false,
@@ -44,7 +42,7 @@ class PernilBuilder extends Component {
         return sum + el;
       }, 0);
     console.log(sum);
-    this.setState({ purchaseable: sum > 0 });
+    return sum > 0;
   }
 
   purchaseHandler = () => {
@@ -67,8 +65,8 @@ class PernilBuilder extends Component {
           encodeURIComponent(this.state.ingredients[i])
       );
     }
-    queryParams.push('price=' + this.state.totalPrice);
-    const queryString = queryParams.join('&');
+    queryParams.push("price=" + this.state.totalPrice);
+    const queryString = queryParams.join("&");
     this.props.history.push({
       pathname: "/checkout",
       search: "?" + queryString,
@@ -98,7 +96,7 @@ class PernilBuilder extends Component {
             ingredientAdded={this.props.onIngredientAdded}
             ingredientRemoved={this.props.onIngredientRemoved}
             disabled={disabledInfo}
-            purchaseable={this.state.purchaseable}
+            purchaseable={this.updatePurchaseState(this.props.ings)}
             price={this.props.price}
             ordered={this.purchaseHandler}
           />
@@ -132,18 +130,26 @@ class PernilBuilder extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     ings: state.ingredients,
-    price: state.totalPrice
-  }
-}
+    price: state.totalPrice,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
-  return{
-    onIngredientAdded: (ingName) => dispatch({ type: actionTypes.ADD_INGREDIENTS, ingredientName: ingName}),
-    onIngredientRemoved: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENTS, ingredientName: ingName}),
-  }
-}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onIngredientAdded: (ingName) =>
+      dispatch({ type: actionTypes.ADD_INGREDIENTS, ingredientName: ingName }),
+    onIngredientRemoved: (ingName) =>
+      dispatch({
+        type: actionTypes.REMOVE_INGREDIENTS,
+        ingredientName: ingName,
+      }),
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(PernilBuilder, axios));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(PernilBuilder, axios));
