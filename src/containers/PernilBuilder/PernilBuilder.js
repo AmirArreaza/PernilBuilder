@@ -20,7 +20,6 @@ class PernilBuilder extends Component {
   };
 
   componentDidMount() {
-    /*
     console.log(this.props);
     axios
       .get("/ingredients.json")
@@ -30,7 +29,6 @@ class PernilBuilder extends Component {
       .catch((error) => {
         this.setState({ error: true });
       });
-      */
   }
 
   updatePurchaseState(ingredients) {
