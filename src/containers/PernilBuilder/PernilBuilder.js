@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "../../axios-orders";
 
 import { connect } from "react-redux";
-import * as burgerBuilderActions from "../../store/actions/index";
+import * as pernilBuilderActions from "../../store/actions/index";
 
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Pernil from "../../components/Pernil/Pernil";
@@ -42,6 +42,7 @@ class PernilBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
+    this.props.onInitPurchased();
     this.props.history.push("/checkout");
   };
 
@@ -109,10 +110,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onIngredientAdded: (ingName) =>
-      dispatch(burgerBuilderActions.addIngredient(ingName)),
+      dispatch(pernilBuilderActions.addIngredient(ingName)),
     onIngredientRemoved: (ingName) =>
-      dispatch(burgerBuilderActions.removeIngredient(ingName)),
-    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
+      dispatch(pernilBuilderActions.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(pernilBuilderActions.initIngredients()),
+    onInitPurchased: () => dispatch(pernilBuilderActions.purchaseInit())
   };
 };
 
