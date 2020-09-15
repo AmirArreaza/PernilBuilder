@@ -55,14 +55,14 @@ class PernilBuilder extends Component {
     }
 
     let orderSummary = null;
-    let burger = this.props.error ? (
+    let pernil = this.props.error ? (
       <p>Can't load ingreadients</p>
     ) : (
       <Spinner />
     );
 
     if (this.props.ings) {
-      burger = (
+      pernil = (
         <Auxiliary>
           <Pernil ingredients={this.props.ings} />
           <BuildControls
@@ -93,7 +93,7 @@ class PernilBuilder extends Component {
         >
           {orderSummary}
         </Modal>
-        {burger}
+        {pernil}
       </Auxiliary>
     );
   }
@@ -101,9 +101,9 @@ class PernilBuilder extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    ings: state.burgerBuilder.ingredients,
-    price: state.burgerBuilder.totalPrice,
-    error: state.burgerBuilder.error,
+    ings: state.pernilBuilder.ingredients,
+    price: state.pernilBuilder.totalPrice,
+    error: state.pernilBuilder.error,
   };
 };
 

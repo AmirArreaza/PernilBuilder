@@ -1,23 +1,23 @@
 import * as actionTypes from "../actions/actionTypes";
 import axios from "../../axios-orders";
 
-export const purchaseBurgerSuccess = (id, orderData) => {
+export const purchasePernilSuccess = (id, orderData) => {
   return {
-    type: actionTypes.PURCHASE_BURGER_SUCCESS,
+    type: actionTypes.PURCHASE_PERNIL_SUCCESS,
     orderId: id,
     orderData: orderData,
   };
 };
-export const purchaseBurgerFail = (error) => {
+export const purchasePernilFail = (error) => {
   return {
-    type: actionTypes.PURCHASE_BURGER_FAIL,
+    type: actionTypes.PURCHASE_PERNIL_FAIL,
     error: error,
   };
 };
 
-export const purchaseBurgerStart = () => {
+export const purchasePernilStart = () => {
   return {
-    type: actionTypes.PURCHASE_BURGER_START,
+    type: actionTypes.PURCHASE_PERNIL_START,
   };
 };
 
@@ -27,16 +27,16 @@ export const purchaseInit = () => {
   };
 };
 
-export const purchaseBurger = (orderData) => {
+export const purchasePernil = (orderData) => {
   return (dispatch) => {
-    dispatch(purchaseBurgerStart());
+    dispatch(purchasePernilStart());
     axios.post("/orders.json", orderData).then(
       (response) => {
         console.log(response.data);
-        dispatch(purchaseBurgerSuccess(response.data.name, orderData));
+        dispatch(purchasePernilSuccess(response.data.name, orderData));
       },
       (error) => {
-        dispatch(purchaseBurgerFail(error));
+        dispatch(purchasePernilFail(error));
       }
     );
   };
