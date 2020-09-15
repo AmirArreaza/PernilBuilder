@@ -12,9 +12,8 @@ const purchasePernilSuccess = (state, action) => {
     id: action.orderId,
   });
   return updateObject(state, {
-    ...state,
     loading: false,
-    orders: newOrder,
+    orders: state.orders.concat( newOrder ),
     purchased: true,
   });
 };

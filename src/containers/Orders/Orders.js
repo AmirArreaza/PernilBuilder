@@ -14,9 +14,10 @@ class Orders extends Component {
   }
 
   render() {
-    let orders = <Spinner />;
+    console.log(this.props.orders);
+    let ordersFetching = <Spinner />;
     if (!this.props.loading) {
-      orders = this.props.orders.map((order) => (
+      ordersFetching = this.props.orders.map((order) => (
         <Order
           key={order.id}
           ingredients={order.ingredients}
@@ -24,7 +25,7 @@ class Orders extends Component {
         />
       ));
     }
-    return <div>{orders}</div>;
+    return <div>{ordersFetching}</div>;
   }
 }
 
