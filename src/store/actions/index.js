@@ -1,2 +1,2 @@
 export { addIngredient, removeIngredient, initIngredients } from "./pernilBuilder";
-export { purchasePernil, purchaseInit } from "./order";
+export { purchasePernil, purchaseInit, fetchOrders } from "./order";
