@@ -116,7 +116,7 @@ class ContactData extends Component {
       orderData: formData,
     };
 
-    this.props.onOrderPernil(order);
+    this.props.onOrderPernil(order, this.props.token);
   };
 
   inputChangedHandler = (event, inputIdentifier) => {
@@ -205,14 +205,15 @@ const mapStateToProps = (state) => {
   return {
     ings: state.pernilBuilder.ingredients,
     price: state.pernilBuilder.totalPrice,
-    loading: state.order.loading
+    loading: state.order.loading,
+    token: state.auth.token
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onOrderPernil: (orderData) =>
-      dispatch(actions.purchasePernil(orderData)),
+    onOrderPernil: (orderData, token) =>
+      dispatch(actions.purchasePernil(orderData, token)),
   };
 };
 
