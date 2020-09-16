@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "../../axios-orders";
 
 import { connect } from "react-redux";
-import * as pernilBuilderActions from "../../store/actions/index";
+import * as actions from "../../store/actions/index";
 
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 import Pernil from "../../components/Pernil/Pernil";
@@ -36,6 +36,7 @@ class PernilBuilder extends Component {
     if(this.props.isAuthenticated){
       this.setState({ purchasing: true });
     }else {
+      this.props.onSetAuthRedirectPath('/checkout');
       this.props.history.push('/auth');
     }
     
@@ -116,11 +117,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onIngredientAdded: (ingName) =>
-      dispatch(pernilBuilderActions.addIngredient(ingName)),
+      dispatch(actions.addIngredient(ingName)),
     onIngredientRemoved: (ingName) =>
-      dispatch(pernilBuilderActions.removeIngredient(ingName)),
-    onInitIngredients: () => dispatch(pernilBuilderActions.initIngredients()),
-    onInitPurchased: () => dispatch(pernilBuilderActions.purchaseInit())
+      dispatch(actions.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(actions.initIngredients()),
+    onInitPurchased: () => dispatch(actions.purchaseInit()),
+    onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
   };
 };
 
