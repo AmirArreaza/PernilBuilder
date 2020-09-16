@@ -33,7 +33,12 @@ class PernilBuilder extends Component {
   }
 
   purchaseHandler = () => {
-    this.setState({ purchasing: true });
+    if(this.props.isAuthenticated){
+      this.setState({ purchasing: true });
+    }else {
+      this.props.history.push('/auth');
+    }
+    
   };
 
   purchaseCancelHandler = () => {
@@ -71,6 +76,7 @@ class PernilBuilder extends Component {
             purchaseable={this.updatePurchaseState(this.props.ings)}
             price={this.props.price}
             ordered={this.purchaseHandler}
+            isAuth={this.props.isAuthenticated}
           />
         </Auxiliary>
       );
@@ -103,6 +109,7 @@ const mapStateToProps = (state) => {
     ings: state.pernilBuilder.ingredients,
     price: state.pernilBuilder.totalPrice,
     error: state.pernilBuilder.error,
+    isAuthenticated: state.auth.token !== null
   };
 };
 
