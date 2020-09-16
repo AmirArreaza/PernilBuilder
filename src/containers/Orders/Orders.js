@@ -14,7 +14,6 @@ class Orders extends Component {
   }
 
   render() {
-    console.log(this.props.orders);
     let ordersFetching = <Spinner />;
     if (!this.props.loading) {
       ordersFetching = this.props.orders.map((order) => (

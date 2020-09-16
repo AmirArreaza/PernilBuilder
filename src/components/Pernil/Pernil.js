@@ -6,7 +6,6 @@ import PernilIngredient from './PernilIngredient/PernilIngridient'
 
 const pernil = (props) => {
     
-    console.log(props);
 
     let transformedIngredients = Object.keys( props.ingredients )
         .map( igKey => {
@@ -18,7 +17,6 @@ const pernil = (props) => {
             return arr.concat(el);
         }, []);
     
-    console.log(transformedIngredients);
 
     if(transformedIngredients.length === 0){
         transformedIngredients = <p>Please start adding ingredients!</p>

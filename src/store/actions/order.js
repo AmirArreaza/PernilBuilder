@@ -32,7 +32,6 @@ export const purchasePernil = (orderData) => {
     dispatch(purchasePernilStart());
     axios.post("/orders.json", orderData).then(
       (response) => {
-        console.log(response.data);
         dispatch(purchasePernilSuccess(response.data.name, orderData));
       },
       (error) => {
