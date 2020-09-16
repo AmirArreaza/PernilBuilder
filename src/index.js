@@ -12,13 +12,15 @@ import thunk from "redux-thunk";
 
 import pernilBuilderReducer from "./store/reducers/pernilBuilder";
 import orderReducer from "./store/reducers/order";
+import authReducer from "./store/reducers/auth";
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
   pernilBuilder: pernilBuilderReducer,
-  order: orderReducer
+  order: orderReducer,
+  auth: authReducer
 })
 
 const store = createStore(
