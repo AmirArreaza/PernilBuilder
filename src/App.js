@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Layout from "./hoc/Layout/Layout";
 import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
@@ -8,11 +10,16 @@ import Orders from './containers/Orders/Orders';
 
 import Auth from './containers/Auth/Auth';
 import Logout from './containers/Logout/Logout';
+import * as actions from './store/actions/index';
 
 class App extends Component {
   state = {
     show: true,
   };
+
+  componentDidMount() {
+    this.props.onTryAutoSingup();
+  }
 
   render() {
     return (
@@ -31,4 +38,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProprs = dispatch => {
+  return {
+    onTryAutoSingup: () => dispatch(actions.authCheckState())
+  };
+}
+
+export default withRouter(connect(null, mapDispatchToProprs)(App));
