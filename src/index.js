@@ -14,14 +14,16 @@ import pernilBuilderReducer from "./store/reducers/pernilBuilder";
 import orderReducer from "./store/reducers/order";
 import authReducer from "./store/reducers/auth";
 
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers =
+  process.env.NODE_ENV === "development"
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+    : null;
 
 const rootReducer = combineReducers({
   pernilBuilder: pernilBuilderReducer,
   order: orderReducer,
-  auth: authReducer
-})
+  auth: authReducer,
+});
 
 const store = createStore(
   rootReducer,
