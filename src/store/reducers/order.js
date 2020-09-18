@@ -13,14 +13,16 @@ const purchasePernilSuccess = (state, action) => {
   });
   return updateObject(state, {
     loading: false,
-    orders: state.orders.concat( newOrder ),
+    orders: state.orders.concat(newOrder),
     purchased: true,
   });
 };
 const purchasePernilFail = (state, action) =>
   updateObject(state, { loading: false });
+
 const purchasePernilStart = (state, action) =>
   updateObject(state, { loading: true });
+
 const purchaseInit = (state, action) => {
   return updateObject(state, {
     ...state,
