@@ -12,7 +12,7 @@ import OrderSummary from "../../components/Pernil/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
-class PernilBuilder extends Component {
+export class PernilBuilder extends Component {
   state = {
     purchasing: false,
   };
