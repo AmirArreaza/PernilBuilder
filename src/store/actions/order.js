@@ -25,16 +25,10 @@ export const purchaseInit = () => {
   };
 };
 export const purchasePernil = (orderData, token) => {
-  return (dispatch) => {
-    dispatch(purchasePernilStart());
-    axios
-      .post("/orders.json?auth=" + token, orderData)
-      .then((response) => {
-        dispatch(purchasePernilSuccess(response.data.name, orderData));
-      })
-      .catch((error) => {
-        dispatch(purchasePernilFail(error));
-      });
+  return {
+    type: actionTypes.PURCHASE_PERNIL,
+    orderData: orderData,
+    token: token,
   };
 };
 export const fetchOrderSuccess = (orders) => {
@@ -55,20 +49,9 @@ export const fetchOrderStart = () => {
   };
 };
 export const fetchOrders = (token, userId) => {
-  return (dispatch) => {
-    dispatch(fetchOrderStart());
-    const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="' + userId + '"'
-    axios
-      .get("orders.json" + queryParams)
-      .then((response) => {
-        const fetchedOrders = [];
-        for (let key in response.data) {
-          fetchedOrders.push({ ...response.data[key], id: key });
-        }
-        dispatch(fetchOrderSuccess(fetchedOrders));
-      })
-      .catch((err) => {
-        dispatch(fetchOrderFailed(err));
-      });
+  return {
+    type: actionTypes.FETCH_ORDERS,
+    token: token,
+    userId: userId,
   };
 };

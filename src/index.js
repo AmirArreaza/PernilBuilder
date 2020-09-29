@@ -14,7 +14,7 @@ import createSagaMiddleware from "redux-saga";
 import pernilBuilderReducer from "./store/reducers/pernilBuilder";
 import orderReducer from "./store/reducers/order";
 import authReducer from "./store/reducers/auth";
-import { watchAuth, watchPernilBuilder } from "./store/sagas";
+import { watchAuth, watchOrder, watchPernilBuilder } from "./store/sagas";
 
 const composeEnhancers =
   process.env.NODE_ENV === "development"
@@ -36,6 +36,7 @@ const store = createStore(
 
 sagaMiddleware.run(watchAuth);
 sagaMiddleware.run(watchPernilBuilder);
+sagaMiddleware.run(watchOrder);
 
 //Provider should wrap everything!!
 

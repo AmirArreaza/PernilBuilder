@@ -3,9 +3,19 @@ export {
   removeIngredient,
   initIngredients,
   setIngredients,
-  fetchIngredientsFailed
+  fetchIngredientsFailed,
 } from "./pernilBuilder";
-export { purchasePernil, purchaseInit, fetchOrders } from "./order";
+export {
+  purchasePernil,
+  purchaseInit,
+  fetchOrders,
+  purchasePernilStart,
+  purchasePernilSuccess,
+  purchasePernilFail,
+  fetchOrderStart,
+  fetchOrderSuccess,
+  fetchOrderFailed
+} from "./order";
 export {
   auth,
   logout,
@@ -15,5 +25,5 @@ export {
   authStart,
   authSuccess,
   authFailed,
-  checkAuthTimeout
+  checkAuthTimeout,
 } from "./auth";

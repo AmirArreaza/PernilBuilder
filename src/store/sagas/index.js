@@ -6,6 +6,7 @@ import {
   authCheckStateSaga,
 } from "./auth";
 import { initIngridientsSaga } from "./pernilBuilder";
+import { purchasePernilSaga, fetchOrdersSaga } from './order'
 
 import * as actionTypes from "../actions/actionTypes";
 
@@ -18,4 +19,9 @@ export function* watchAuth() {
 
 export function* watchPernilBuilder() {
   yield takeEvery(actionTypes.INIT_INGREDIENTS, initIngridientsSaga);
+}
+
+export function* watchOrder() {
+  yield takeEvery(actionTypes.PURCHASE_PERNIL, purchasePernilSaga);
+  yield takeEvery(actionTypes.FETCH_ORDERS, fetchOrdersSaga);
 }
