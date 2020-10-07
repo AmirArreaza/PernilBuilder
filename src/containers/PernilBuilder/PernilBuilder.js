@@ -14,10 +14,11 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 const PernilBuilder = (props) => {
   const [purchaising, setPurchaising] = useState(false);
+  const { onInitIngredients } = props;
 
   useEffect(() => {
-    props.onInitIngredients();
-  }, []);
+    onInitIngredients();
+  }, [onInitIngredients]);
 
   const updatePurchaseState = (ingredients) => {
     const sum = Object.keys(ingredients)
@@ -85,10 +86,7 @@ const PernilBuilder = (props) => {
 
   return (
     <Auxiliary>
-      <Modal
-        show={purchaising}
-        modalClosed={purchaseCancelHandler}
-      >
+      <Modal show={purchaising} modalClosed={purchaseCancelHandler}>
         {orderSummary}
       </Modal>
       {pernil}

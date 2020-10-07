@@ -44,11 +44,13 @@ const Auth = (props) => {
   });
   const [isSignup, setIsSignup] = useState(true);
 
+  const { buildingPernil, authRedirectPath, onSetAuthRedirectPath } = props;
+
   useEffect(() => {
-    if (!props.buildingPernil && props.authRedirectPath !== "/") {
-      props.onSetAuthRedirectPath();
+    if (!buildingPernil && authRedirectPath !== "/") {
+      onSetAuthRedirectPath();
     }
-  }, []);
+  }, [buildingPernil, authRedirectPath, onSetAuthRedirectPath]);
 
   const inputChangedHandler = (event, controlName) => {
     const updatedControlsForm = updateObject(authForm, {

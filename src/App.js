@@ -20,9 +20,11 @@ const Auth = React.lazy(() => {
 });
 
 const App = (props) => {
+  const { onTryAutoSingup } = props;
+
   useEffect(() => {
-    props.onTryAutoSingup();
-  }, [props]);
+    onTryAutoSingup();
+  }, [onTryAutoSingup]);
 
   let routes = (
     <Switch>
