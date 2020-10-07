@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "../../axios-orders";
 
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions/index";
 
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
@@ -14,7 +14,22 @@ import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 const PernilBuilder = (props) => {
   const [purchaising, setPurchaising] = useState(false);
-  const { onInitIngredients } = props;
+
+  const dispatch = useDispatch();
+
+  const ings = useSelector((state) => state.pernilBuilder.ingredients);
+  const price = useSelector((state) => state.pernilBuilder.totalPrice);
+  const error = useSelector((state) => state.pernilBuilder.error);
+  const isAuthenticated = useSelector((state) => state.auth.token !== null);
+
+  const onIngredientAdded = (ingName) =>
+    dispatch(actions.addIngredient(ingName));
+  const onIngredientRemoved = (ingName) =>
+    dispatch(actions.removeIngredient(ingName));
+  const onInitIngredients = useCallback(() => dispatch(actions.initIngredients()), [dispatch]);
+  const onInitPurchased = () => dispatch(actions.purchaseInit());
+  const onSetAuthRedirectPath = (path) =>
+    dispatch(actions.setAuthRedirectPath(path));
 
   useEffect(() => {
     onInitIngredients();
@@ -32,10 +47,10 @@ const PernilBuilder = (props) => {
   };
 
   const purchaseHandler = () => {
-    if (props.isAuthenticated) {
+    if (isAuthenticated) {
       setPurchaising(true);
     } else {
-      props.onSetAuthRedirectPath("/checkout");
+      onSetAuthRedirectPath("/checkout");
       props.history.push("/auth");
     }
   };
@@ -45,39 +60,39 @@ const PernilBuilder = (props) => {
   };
 
   const purchaseContinueHandler = () => {
-    props.onInitPurchased();
+    onInitPurchased();
     props.history.push("/checkout");
   };
 
   const disabledInfo = {
-    ...props.ings,
+    ...ings,
   };
   for (let key in disabledInfo) {
     disabledInfo[key] = disabledInfo[key] <= 0;
   }
 
   let orderSummary = null;
-  let pernil = props.error ? <p>Can't load ingreadients</p> : <Spinner />;
+  let pernil = error ? <p>Can't load ingreadients</p> : <Spinner />;
 
-  if (props.ings) {
+  if (ings) {
     pernil = (
       <Auxiliary>
-        <Pernil ingredients={props.ings} />
+        <Pernil ingredients={ings} />
         <BuildControls
-          ingredientAdded={props.onIngredientAdded}
-          ingredientRemoved={props.onIngredientRemoved}
+          ingredientAdded={onIngredientAdded}
+          ingredientRemoved={onIngredientRemoved}
           disabled={disabledInfo}
-          purchaseable={updatePurchaseState(props.ings)}
-          price={props.price}
+          purchaseable={updatePurchaseState(ings)}
+          price={price}
           ordered={purchaseHandler}
-          isAuth={props.isAuthenticated}
+          isAuth={isAuthenticated}
         />
       </Auxiliary>
     );
     orderSummary = (
       <OrderSummary
-        ingredients={props.ings}
-        price={props.price}
+        ingredients={ings}
+        price={price}
         purchaseCanceled={purchaseCancelHandler}
         purchaseContinued={purchaseContinueHandler}
       />
@@ -94,28 +109,4 @@ const PernilBuilder = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    ings: state.pernilBuilder.ingredients,
-    price: state.pernilBuilder.totalPrice,
-    error: state.pernilBuilder.error,
-    isAuthenticated: state.auth.token !== null,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
-    onIngredientRemoved: (ingName) =>
-      dispatch(actions.removeIngredient(ingName)),
-    onInitIngredients: () => dispatch(actions.initIngredients()),
-    onInitPurchased: () => dispatch(actions.purchaseInit()),
-    onSetAuthRedirectPath: (path) =>
-      dispatch(actions.setAuthRedirectPath(path)),
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withErrorHandler(PernilBuilder, axios));
+export default withErrorHandler(PernilBuilder, axios);
