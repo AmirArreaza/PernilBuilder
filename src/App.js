@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import asyncComponent from './hoc/asyncComponent/asyncComponent';
+import asyncComponent from "./hoc/asyncComponent/asyncComponent";
 
 import Layout from "./hoc/Layout/Layout";
 import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
@@ -10,55 +10,48 @@ import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
 import Logout from "./containers/Logout/Logout";
 import * as actions from "./store/actions/index";
 
-const asyncCheckout = asyncComponent(() =>{
-  return import('./containers/Checkout/Checkout');
+const asyncCheckout = asyncComponent(() => {
+  return import("./containers/Checkout/Checkout");
 });
-const asyncOrders = asyncComponent(() =>{
-  return import('./containers/Orders/Orders');
+const asyncOrders = asyncComponent(() => {
+  return import("./containers/Orders/Orders");
 });
-const asyncAuth = asyncComponent(() =>{
-  return import('./containers/Auth/Auth');
+const asyncAuth = asyncComponent(() => {
+  return import("./containers/Auth/Auth");
 });
 
-class App extends Component {
-  state = {
-    show: true,
-  };
+const App = (props) => {
+  
+  useEffect(() => {
+    props.onTryAutoSingup();
+  }, [props]);
 
-  componentDidMount() {
-    this.props.onTryAutoSingup();
-  }
+  let routes = (
+    <Switch>
+      <Route path="/auth" component={asyncAuth}></Route>
+      <Route path="/" exact component={PernilBuilder}></Route>
+      <Redirect to="/" />
+    </Switch>
+  );
 
-  render() {
-    let routes = (
+  if (props.isAuthenticated) {
+    routes = (
       <Switch>
+        <Route path="/checkout" component={asyncCheckout}></Route>
+        <Route path="/orders" component={asyncOrders}></Route>
+        <Route path="/logout" component={Logout}></Route>
         <Route path="/auth" component={asyncAuth}></Route>
         <Route path="/" exact component={PernilBuilder}></Route>
-        <Redirect to="/"/>
+        <Redirect to="/" />
       </Switch>
     );
-
-    if (this.props.isAuthenticated) {
-      routes = (
-        <Switch>
-          <Route path="/checkout" component={asyncCheckout}></Route>
-          <Route path="/orders" component={asyncOrders}></Route>
-          <Route path="/logout" component={Logout}></Route>
-          <Route path="/auth" component={asyncAuth}></Route>
-          <Route path="/" exact component={PernilBuilder}></Route>
-          <Redirect to="/"/>
-        </Switch>
-      );
-    }
-    return (
-      <div>
-        <Layout>
-          {routes}
-        </Layout>
-      </div>
-    );
   }
-}
+  return (
+    <div>
+      <Layout>{routes}</Layout>
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
