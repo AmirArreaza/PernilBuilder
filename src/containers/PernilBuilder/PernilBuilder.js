@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "../../axios-orders";
 
 import { connect } from "react-redux";
@@ -12,16 +12,14 @@ import OrderSummary from "../../components/Pernil/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
-export class PernilBuilder extends Component {
-  state = {
-    purchasing: false,
-  };
+const PernilBuilder = (props) => {
+  const [purchaising, setPurchaising] = useState(false);
 
-  componentDidMount() {
-    this.props.onInitIngredients();
-  }
+  useEffect(() => {
+    props.onInitIngredients();
+  }, []);
 
-  updatePurchaseState(ingredients) {
+  const updatePurchaseState = (ingredients) => {
     const sum = Object.keys(ingredients)
       .map((igKey) => {
         return ingredients[igKey];
@@ -30,99 +28,92 @@ export class PernilBuilder extends Component {
         return sum + el;
       }, 0);
     return sum > 0;
+  };
+
+  const purchaseHandler = () => {
+    if (props.isAuthenticated) {
+      setPurchaising(true);
+    } else {
+      props.onSetAuthRedirectPath("/checkout");
+      props.history.push("/auth");
+    }
+  };
+
+  const purchaseCancelHandler = () => {
+    setPurchaising(false);
+  };
+
+  const purchaseContinueHandler = () => {
+    props.onInitPurchased();
+    props.history.push("/checkout");
+  };
+
+  const disabledInfo = {
+    ...props.ings,
+  };
+  for (let key in disabledInfo) {
+    disabledInfo[key] = disabledInfo[key] <= 0;
   }
 
-  purchaseHandler = () => {
-    if(this.props.isAuthenticated){
-      this.setState({ purchasing: true });
-    }else {
-      this.props.onSetAuthRedirectPath('/checkout');
-      this.props.history.push('/auth');
-    }
-    
-  };
+  let orderSummary = null;
+  let pernil = props.error ? <p>Can't load ingreadients</p> : <Spinner />;
 
-  purchaseCancelHandler = () => {
-    this.setState({ purchasing: false });
-  };
-
-  purchaseContinueHandler = () => {
-    this.props.onInitPurchased();
-    this.props.history.push("/checkout");
-  };
-
-  render() {
-    const disabledInfo = {
-      ...this.props.ings,
-    };
-    for (let key in disabledInfo) {
-      disabledInfo[key] = disabledInfo[key] <= 0;
-    }
-
-    let orderSummary = null;
-    let pernil = this.props.error ? (
-      <p>Can't load ingreadients</p>
-    ) : (
-      <Spinner />
-    );
-
-    if (this.props.ings) {
-      pernil = (
-        <Auxiliary>
-          <Pernil ingredients={this.props.ings} />
-          <BuildControls
-            ingredientAdded={this.props.onIngredientAdded}
-            ingredientRemoved={this.props.onIngredientRemoved}
-            disabled={disabledInfo}
-            purchaseable={this.updatePurchaseState(this.props.ings)}
-            price={this.props.price}
-            ordered={this.purchaseHandler}
-            isAuth={this.props.isAuthenticated}
-          />
-        </Auxiliary>
-      );
-      orderSummary = (
-        <OrderSummary
-          ingredients={this.props.ings}
-          price={this.props.price}
-          purchaseCanceled={this.purchaseCancelHandler}
-          purchaseContinued={this.purchaseContinueHandler}
-        />
-      );
-    }
-
-    return (
+  if (props.ings) {
+    pernil = (
       <Auxiliary>
-        <Modal
-          show={this.state.purchasing}
-          modalClosed={this.purchaseCancelHandler}
-        >
-          {orderSummary}
-        </Modal>
-        {pernil}
+        <Pernil ingredients={props.ings} />
+        <BuildControls
+          ingredientAdded={props.onIngredientAdded}
+          ingredientRemoved={props.onIngredientRemoved}
+          disabled={disabledInfo}
+          purchaseable={updatePurchaseState(props.ings)}
+          price={props.price}
+          ordered={purchaseHandler}
+          isAuth={props.isAuthenticated}
+        />
       </Auxiliary>
     );
+    orderSummary = (
+      <OrderSummary
+        ingredients={props.ings}
+        price={props.price}
+        purchaseCanceled={purchaseCancelHandler}
+        purchaseContinued={purchaseContinueHandler}
+      />
+    );
   }
-}
+
+  return (
+    <Auxiliary>
+      <Modal
+        show={purchaising}
+        modalClosed={purchaseCancelHandler}
+      >
+        {orderSummary}
+      </Modal>
+      {pernil}
+    </Auxiliary>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
     ings: state.pernilBuilder.ingredients,
     price: state.pernilBuilder.totalPrice,
     error: state.pernilBuilder.error,
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onIngredientAdded: (ingName) =>
-      dispatch(actions.addIngredient(ingName)),
+    onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
     onIngredientRemoved: (ingName) =>
       dispatch(actions.removeIngredient(ingName)),
     onInitIngredients: () => dispatch(actions.initIngredients()),
     onInitPurchased: () => dispatch(actions.purchaseInit()),
-    onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
+    onSetAuthRedirectPath: (path) =>
+      dispatch(actions.setAuthRedirectPath(path)),
   };
 };
 
