@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import asyncComponent from "./hoc/asyncComponent/asyncComponent";
 
 import Layout from "./hoc/Layout/Layout";
 import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
@@ -10,25 +9,24 @@ import PernilBuilder from "./containers/PernilBuilder/PernilBuilder";
 import Logout from "./containers/Logout/Logout";
 import * as actions from "./store/actions/index";
 
-const asyncCheckout = asyncComponent(() => {
+const Checkout = React.lazy(() => {
   return import("./containers/Checkout/Checkout");
 });
-const asyncOrders = asyncComponent(() => {
+const Orders = React.lazy(() => {
   return import("./containers/Orders/Orders");
 });
-const asyncAuth = asyncComponent(() => {
+const Auth = React.lazy(() => {
   return import("./containers/Auth/Auth");
 });
 
 const App = (props) => {
-  
   useEffect(() => {
     props.onTryAutoSingup();
   }, [props]);
 
   let routes = (
     <Switch>
-      <Route path="/auth" component={asyncAuth}></Route>
+      <Route path="/auth" render={() => <Auth />}></Route>
       <Route path="/" exact component={PernilBuilder}></Route>
       <Redirect to="/" />
     </Switch>
@@ -37,10 +35,10 @@ const App = (props) => {
   if (props.isAuthenticated) {
     routes = (
       <Switch>
-        <Route path="/checkout" component={asyncCheckout}></Route>
-        <Route path="/orders" component={asyncOrders}></Route>
+        <Route path="/checkout" render={() => <Checkout />}></Route>
+        <Route path="/orders" render={() => <Orders />}></Route>
         <Route path="/logout" component={Logout}></Route>
-        <Route path="/auth" component={asyncAuth}></Route>
+        <Route path="/auth" render={() => <Auth />}></Route>
         <Route path="/" exact component={PernilBuilder}></Route>
         <Redirect to="/" />
       </Switch>
@@ -48,7 +46,9 @@ const App = (props) => {
   }
   return (
     <div>
-      <Layout>{routes}</Layout>
+      <Layout>
+        <Suspense fallback={<p>Loading</p>}>{routes}</Suspense>
+      </Layout>
     </div>
   );
 };
