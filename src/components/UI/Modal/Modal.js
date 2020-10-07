@@ -10,6 +10,7 @@ class Modal extends Component {
   }
 
   render() {
+    
     return (
       <Auxiliary>
         <Backdrop show={this.props.show} clicked={this.props.modalClosed} />
